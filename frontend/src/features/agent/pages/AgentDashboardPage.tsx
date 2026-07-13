@@ -207,7 +207,7 @@ export function AgentDashboardPage() {
         </Badge>
       </div>
 
-      <AgentStatsCards orders={orders || []} />
+      <AgentStatsCards orders={orders || []} onTabChange={setActiveTab} />
 
       {/* Main Grid for Current Assignment and Sidebars */}
       <div className="grid gap-6 lg:grid-cols-3">

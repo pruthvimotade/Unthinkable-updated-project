@@ -4,6 +4,7 @@ import { env } from "./config/env.config";
 import { logger } from "./config/logger.config";
 import { prisma } from "./lib/prisma";
 import { cronService } from "./modules/cron/cron.service";
+import { socketService } from "./modules/socket/socket.service";
 
 const app = createApp();
 cronService.start();
@@ -12,6 +13,8 @@ const server: Server = app.listen(env.PORT, () => {
   logger.info(`🚀 Server listening on port ${env.PORT} [${env.NODE_ENV}]`);
   logger.info(`📄 API docs available at http://localhost:${env.PORT}/api-docs`);
 });
+
+socketService.init(server);
 
 /**
  * Graceful shutdown:

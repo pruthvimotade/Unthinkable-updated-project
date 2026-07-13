@@ -18,7 +18,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, to }, "Failed to send verification email");
-      throw new Error(`Failed to send verification email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -36,7 +36,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, to }, "Failed to send password reset email");
-      throw new Error(`Failed to send password reset email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -54,7 +54,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, orderNumber }, "Failed to send order created email");
-      throw new Error(`Failed to send order created email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -80,7 +80,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, orderNumber }, "Failed to send order status update email");
-      throw new Error(`Failed to send order status update email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -104,7 +104,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, orderNumber, to }, "Failed to send agent assignment email");
-      throw new Error(`Failed to send agent assignment email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -121,7 +121,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, to }, "Failed to send admin alert email");
-      throw new Error(`Failed to send admin alert email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -135,7 +135,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, to }, "Failed to send OTP verification email");
-      throw new Error(`Failed to send OTP verification email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   },
 
@@ -149,7 +149,7 @@ export const emailService = {
       });
     } catch (error) {
       logger.error({ err: error, to }, "Failed to send welcome email");
-      throw new Error(`Failed to send welcome email to ${to}`);
+      // Don't throw - allow system to continue without email
     }
   }
 };

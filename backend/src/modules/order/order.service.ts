@@ -137,8 +137,10 @@ export const orderService = {
       "Order Created",
     );
 
-    // Fire-and-forget notification
-    void notificationService.sendOrderCreated(order.id);
+    // Fire-and-forget notification with error handling
+    notificationService.sendOrderCreated(order.id).catch((err: any) => {
+      logger.warn({ orderId: order.id, err: err.message }, "Notification failed during order creation");
+    });
 
     // Fire-and-forget auto assignment
     import("../assignment").then(({ assignmentService }) => {
@@ -258,6 +260,13 @@ export const orderService = {
 
     // Fire-and-forget: Notify customer of status update
     void notificationService.sendStatusUpdate(orderId);
+
+    // Fire-and-forget auto assignment
+    import("../assignment").then(({ assignmentService }) => {
+      assignmentService.autoAssign(orderId, "SYSTEM").catch((err: any) => {
+        logger.warn({ orderId, err: err.message }, "Auto-assignment failed during order reschedule");
+      });
+    });
 
     return result;
   },

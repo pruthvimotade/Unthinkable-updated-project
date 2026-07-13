@@ -6,7 +6,7 @@ import { smsProvider } from "./sms.provider";
 
 async function logNotification(userId: string, channel: "EMAIL" | "SMS" | "IN_APP", title: string, body: string, status: "SENT" | "FAILED" | "PENDING" = "SENT") {
   try {
-    await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId,
         channel,
@@ -15,6 +15,12 @@ async function logNotification(userId: string, channel: "EMAIL" | "SMS" | "IN_AP
         status,
       }
     });
+
+    if (channel === "IN_APP") {
+      import("../socket/socket.service").then(({ socketService }) => {
+        socketService.emitToRoom(`user_${userId}`, "notification", notification);
+      }).catch(err => logger.error({ err }, "Socket service not found"));
+    }
   } catch (err) {
     logger.error({ err, userId, channel }, "Failed to log notification to database");
   }
@@ -48,6 +54,12 @@ async function processNotification(orderId: string) {
     const currentStatus = order.status;
     const previousStatus = trackingEvents[1]?.status || "PENDING";
 
+    // Emit real-time tracking update
+    import("../socket/socket.service").then(({ socketService }) => {
+      socketService.emitToRoom(`order_${orderId}`, "orderUpdate", { orderId, status: currentStatus });
+      socketService.emitToRoom(`admin`, "orderUpdate", { orderId, status: currentStatus });
+    }).catch(err => logger.error({ err }, "Socket service not found"));
+
     // Resolve active agent and admin details
     const activeAssignment = order.assignments.find(a => ["ACCEPTED", "PENDING"].includes(a.status));
     const activeAgent = activeAssignment?.agent;
@@ -74,6 +86,7 @@ async function processNotification(orderId: string) {
           );
           await logNotification(order.customerId, "EMAIL", `Order Booked - #${order.orderNumber}`, `Confirmation email sent to ${order.customer.email}`);
         } catch (err) {
+          logger.warn({ err, email: order.customer.email }, "Email send failed - logging as failed notification");
           await logNotification(order.customerId, "EMAIL", `Order Booked - #${order.orderNumber}`, `Failed to send email to ${order.customer.email}`, "FAILED");
         }
       }

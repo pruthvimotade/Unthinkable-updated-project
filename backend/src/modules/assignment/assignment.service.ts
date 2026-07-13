@@ -166,7 +166,7 @@ export const assignmentService = {
     if (!order) {
       throw ApiError.notFound("Order not found");
     }
-    if (order.status !== "PENDING" && order.status !== "CONFIRMED") {
+    if (order.status !== "PENDING" && order.status !== "CONFIRMED" && order.status !== "RESCHEDULED") {
       throw ApiError.badRequest(
         `Order cannot be assigned — current status is ${order.status}`,
       );
@@ -309,7 +309,7 @@ export const assignmentService = {
     if (!order) {
       throw ApiError.notFound("Order not found");
     }
-    if (order.status !== "PENDING" && order.status !== "CONFIRMED") {
+    if (order.status !== "PENDING" && order.status !== "CONFIRMED" && order.status !== "RESCHEDULED") {
       throw ApiError.badRequest(
         `Order cannot be assigned — current status is ${order.status}`,
       );

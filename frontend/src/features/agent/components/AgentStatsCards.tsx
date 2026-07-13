@@ -4,9 +4,10 @@ import type { OrderWithTracking } from "../../tracking/api/trackingApi";
 
 interface AgentStatsCardsProps {
   orders: OrderWithTracking[];
+  onTabChange?: (tab: "assigned" | "active" | "completed") => void;
 }
 
-export function AgentStatsCards({ orders }: AgentStatsCardsProps) {
+export function AgentStatsCards({ orders, onTabChange }: AgentStatsCardsProps) {
   // Aggregate stats from the detailed orders
   const activeAssignments = orders.length;
   const pendingPickup = orders.filter(o => o.status === "ASSIGNED" || o.status === "PENDING").length;
@@ -22,7 +23,10 @@ export function AgentStatsCards({ orders }: AgentStatsCardsProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card>
+      <Card 
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => onTabChange?.("assigned")}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Active Assignments</CardTitle>
           <ListTodo className="h-4 w-4 text-muted-foreground" />
@@ -35,7 +39,10 @@ export function AgentStatsCards({ orders }: AgentStatsCardsProps) {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card 
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => onTabChange?.("active")}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Pending Pickup</CardTitle>
           <Package className="h-4 w-4 text-orange-500" />
@@ -48,7 +55,10 @@ export function AgentStatsCards({ orders }: AgentStatsCardsProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card 
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => onTabChange?.("active")}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">In Transit</CardTitle>
           <Truck className="h-4 w-4 text-blue-500" />
@@ -61,7 +71,10 @@ export function AgentStatsCards({ orders }: AgentStatsCardsProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card 
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => onTabChange?.("completed")}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Completed Today</CardTitle>
           <CheckCircle2 className="h-4 w-4 text-green-500" />

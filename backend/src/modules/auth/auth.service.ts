@@ -321,7 +321,7 @@ export const authService = {
 
     const token = crypto.randomBytes(32).toString("hex");
     const tokenHash = hashToken(token);
-    const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour expiration
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes expiration
 
     await prisma.user.update({
       where: { id: user.id },
@@ -331,7 +331,11 @@ export const authService = {
       },
     });
 
-    await emailService.sendResetPasswordEmail(user.email, user.name, token);
+    try {
+      await emailService.sendResetPasswordEmail(user.email, user.name, token);
+    } catch (err) {
+      logger.error({ err, email: user.email }, "Failed to send reset password email, but ignoring to prevent 500");
+    }
   },
 
   /**
