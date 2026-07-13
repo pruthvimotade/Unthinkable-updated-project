@@ -24,7 +24,7 @@ export function CreateOrderPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   
-  const [pricingSummary, setPricingSummary] = useState<CalculatePriceResponse["data"] | null>(null);
+  const [pricingSummary, setPricingSummary] = useState<CalculatePriceResponse["data"]["pricing"] | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const methods = useForm<OrderFormData>({
@@ -49,7 +49,7 @@ export function CreateOrderPage() {
   const calculateMutation = useMutation({
     mutationFn: orderApi.calculatePrice,
     onSuccess: (data) => {
-      setPricingSummary(data.data);
+      setPricingSummary(data.data.pricing);
     },
     onError: (err: AxiosError<{ message?: string }>) => {
       error(err.response?.data?.message || "Failed to calculate price");

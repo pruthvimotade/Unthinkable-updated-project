@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 interface OrderConfirmationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  summary: CalculatePriceResponse["data"] | null;
+  summary: CalculatePriceResponse["data"]["pricing"] | null;
   paymentType?: "PREPAID" | "COD";
   onConfirm: () => void;
   isConfirming: boolean;

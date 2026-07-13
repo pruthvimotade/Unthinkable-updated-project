@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { orderApi } from "../../orders/api/orderApi";
 import { adminApi } from "../api/adminApi";
 import { api } from "../../../api/axios";
@@ -17,6 +18,7 @@ import { Input } from "../../../components/ui/input";
 export function AdminOrdersPage() {
   const queryClient = useQueryClient();
   const { success, error } = useToast();
+  const [searchParams] = useSearchParams();
   
   const [page, setPage] = useState(1);
   const [orderType, setOrderType] = useState("");
@@ -24,7 +26,7 @@ export function AdminOrdersPage() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(searchParams.get("status") || "");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 

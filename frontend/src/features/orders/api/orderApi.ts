@@ -28,15 +28,17 @@ export interface CalculatePricePayload {
 export interface CalculatePriceResponse {
   success: boolean;
   data: {
-    pickupZone: { id: string; name: string; code: string };
-    dropZone: { id: string; name: string; code: string };
-    zoneType: string;
-    actualWeight: number;
-    volumetricWeight: number;
-    billableWeight: number;
-    basePrice: number;
-    codCharge: number;
-    finalPrice: number;
+    pricing: {
+      pickupZone?: { id: string; name: string; code: string };
+      dropZone?: { id: string; name: string; code: string };
+      zoneType: string;
+      actualWeight: number;
+      volumetricWeight: number;
+      billableWeight: number;
+      basePrice: number;
+      codCharge: number;
+      finalPrice: number;
+    }
   }
 }
 

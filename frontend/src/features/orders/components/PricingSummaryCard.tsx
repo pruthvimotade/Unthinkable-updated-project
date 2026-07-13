@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { formatINR } from "../../../utils/currency";
 
 interface PricingSummaryCardProps {
-  summary: CalculatePriceResponse["data"] | null;
+  summary: CalculatePriceResponse["data"]["pricing"] | null;
   onCalculate: () => void;
   isLoading: boolean;
   canCalculate: boolean;
