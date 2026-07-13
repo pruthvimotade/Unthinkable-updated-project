@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: logistics-platform-backend
+    env: node
+    plan: free
+    region: singapore
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: logistics-db
+          property: connectionString
+
+databases:
+  - name: logistics-db
+    databaseName: logistics
+    user: logistics_user
+    plan: free
+    region: singapore

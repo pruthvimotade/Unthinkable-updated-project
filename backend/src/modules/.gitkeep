@@ -1,0 +1,12 @@
+# Feature modules live here, one folder per feature.
+#
+# Convention for each module (applied when a module is actually built):
+#   src/modules/<feature>/
+#     <feature>.routes.ts
+#     <feature>.controller.ts
+#     <feature>.service.ts
+#     <feature>.schema.ts      (Zod validation schemas)
+#     <feature>.types.ts
+#
+# No feature modules (e.g. auth, orders) are implemented yet.
+# This scaffold intentionally contains infrastructure only.

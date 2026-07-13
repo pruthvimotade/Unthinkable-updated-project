@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "OrderStatus" ADD VALUE 'ARRIVED_AT_PICKUP';
