@@ -7,7 +7,7 @@ import { RecentTrackingCard } from "../dashboard/RecentTrackingCard";
 import { QuickActionsCard } from "../dashboard/QuickActionsCard";
 import { AvailableAgentsCard } from "../dashboard/AvailableAgentsCard";
 import { Skeleton } from "../../../components/ui/skeleton";
-import { Activity } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 export function AdminDashboardPage() {
   const { data, isLoading, isError, error } = useQuery({
@@ -18,19 +18,19 @@ export function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <Skeleton className="h-8 w-64 mb-2" />
-          <Skeleton className="h-4 w-96" />
+      <div className="space-y-8 pb-12">
+        <div className="bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+          <Skeleton className="h-8 w-64 mb-2 rounded-xl" />
+          <Skeleton className="h-4 w-96 rounded-lg" />
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-          {Array(6).fill(0).map((_, i) => (
-            <Skeleton key={i} className="h-32 rounded-xl" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          {Array(5).fill(0).map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-2xl" />
           ))}
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Skeleton className="col-span-1 lg:col-span-2 h-[400px] rounded-xl" />
-          <Skeleton className="col-span-1 h-[400px] rounded-xl" />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <Skeleton className="col-span-1 lg:col-span-2 h-[350px] rounded-2xl" />
+          <Skeleton className="col-span-1 h-[350px] rounded-2xl" />
         </div>
       </div>
     );
@@ -38,35 +38,37 @@ export function AdminDashboardPage() {
 
   if (isError || !data) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-full">
-          <Activity className="h-8 w-8" />
+      <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
+        <div className="bg-red-500/10 text-red-400 p-5 rounded-2xl border border-red-500/20">
+          <AlertTriangle className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-bold">Failed to load admin dashboard</h2>
-        <p className="text-muted-foreground max-w-md">
-          {error?.message || "There was an error aggregating the latest platform analytics."}
+        <h2 className="text-2xl font-black tracking-tight text-white">Control Center Unavailable</h2>
+        <p className="text-sm text-zinc-500 max-w-md">
+          {error?.message || "Failed to aggregate platform analytics. The backend may be unreachable."}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 pb-12">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">System Overview</h1>
-        <p className="text-muted-foreground">Monitor platform logistics, performance, and revenue in real-time.</p>
+    <div className="space-y-6 pb-12">
+      <div className="bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+        <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          Operations Hub
+        </h1>
+        <p className="text-sm text-zinc-500 font-medium mt-1">Monitor platform logistics, fleet performance, and revenue in real-time.</p>
       </div>
 
       {data.stats.zoneSaturations && data.stats.zoneSaturations.length > 0 && (
         <div className="space-y-3">
           {data.stats.zoneSaturations.map((sat: any) => (
-            <div key={sat.zoneId} className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 text-amber-200 rounded-2xl shadow-lg shadow-amber-500/5">
-              <span className="relative flex h-3.5 w-3.5">
+            <div key={sat.zoneId} className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 text-amber-200 rounded-2xl">
+              <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
               </span>
-              <span className="text-sm font-semibold">
-                Zone Saturation Alert: "{sat.zoneName}" is overloaded! Over 80% of active agents are currently at full capacity.
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Zone Saturation Alert: "{sat.zoneName}" — Over 80% agents at full capacity.
               </span>
             </div>
           ))}
@@ -88,3 +90,4 @@ export function AdminDashboardPage() {
     </div>
   );
 }
+

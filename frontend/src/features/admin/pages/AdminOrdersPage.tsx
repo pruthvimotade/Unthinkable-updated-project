@@ -5,10 +5,9 @@ import { orderApi } from "../../orders/api/orderApi";
 import { adminApi } from "../api/adminApi";
 import { api } from "../../../api/axios";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
-import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { formatINR } from "../../../utils/currency";
-import { Loader2 } from "lucide-react";
+import { Loader2, Package } from "lucide-react";
 import { useToast } from "../../../contexts/ToastContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../../../components/ui/dialog";
 import { Label } from "../../../components/ui/label";
@@ -128,28 +127,42 @@ export function AdminOrdersPage() {
     }
   }, [candidatesData, reassignAgentId]);
 
-  if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+      </div>
+    );
+  }
 
   const orders = data?.data?.orders || [];
   const totalPages = data?.data?.totalPages || 1;
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold tracking-tight">Orders Management</h1>
+    <div className="space-y-8 pb-12">
+      <div className="flex justify-between items-center bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            Orders Queue
+          </h1>
+          <p className="text-sm text-zinc-500 font-medium mt-1">Manage active dispatches, override delivery routes, and trigger manuals drivers scoring.</p>
+        </div>
+      </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-md bg-muted/50">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl border border-white/5 bg-zinc-950/40 backdrop-blur-md">
         <div className="space-y-2">
-          <Label>Search Orders</Label>
+          <Label className="text-zinc-400 font-bold text-xs">Search Orders</Label>
           <Input 
             type="text" 
             placeholder="Order #, customer, phone..." 
             value={search} 
             onChange={(e) => { setSearch(e.target.value); setPage(1); }} 
+            className="bg-white/[0.02] border-white/10 text-white placeholder-zinc-500 rounded-xl h-11"
           />
         </div>
         <div className="space-y-2">
-          <Label>Status</Label>
-          <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+          <Label className="text-zinc-400 font-bold text-xs">Status</Label>
+          <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
             <option value="">All Statuses</option>
             <option value="PENDING">PENDING</option>
             <option value="ASSIGNED">ASSIGNED</option>
@@ -163,31 +176,31 @@ export function AdminOrdersPage() {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Order Type</Label>
-          <Select value={orderType} onChange={(e) => { setOrderType(e.target.value); setPage(1); }}>
+          <Label className="text-zinc-400 font-bold text-xs">Order Type</Label>
+          <Select value={orderType} onChange={(e) => { setOrderType(e.target.value); setPage(1); }} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
             <option value="">All Types</option>
             <option value="B2B">B2B</option>
             <option value="B2C">B2C</option>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Payment Type</Label>
-          <Select value={paymentType} onChange={(e) => { setPaymentType(e.target.value); setPage(1); }}>
+          <Label className="text-zinc-400 font-bold text-xs">Payment Type</Label>
+          <Select value={paymentType} onChange={(e) => { setPaymentType(e.target.value); setPage(1); }} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
             <option value="">All Types</option>
             <option value="PREPAID">Prepaid</option>
             <option value="COD">COD</option>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Date From</Label>
-          <Input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1); }} />
+          <Label className="text-zinc-400 font-bold text-xs">Date From</Label>
+          <Input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1); }} className="bg-white/[0.02] border-white/10 text-white rounded-xl h-11" />
         </div>
         <div className="space-y-2">
-          <Label>Date To</Label>
-          <Input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1); }} />
+          <Label className="text-zinc-400 font-bold text-xs">Date To</Label>
+          <Input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1); }} className="bg-white/[0.02] border-white/10 text-white rounded-xl h-11" />
         </div>
         <div className="space-y-2">
-          <Label>Sorting</Label>
+          <Label className="text-zinc-400 font-bold text-xs">Sorting</Label>
           <Select 
             value={`${sortBy}-${sortOrder}`} 
             onChange={(e) => {
@@ -196,6 +209,7 @@ export function AdminOrdersPage() {
               setSortOrder(order as "asc" | "desc");
               setPage(1);
             }}
+            className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer"
           >
             <option value="createdAt-desc">Newest</option>
             <option value="createdAt-asc">Oldest</option>
@@ -205,7 +219,7 @@ export function AdminOrdersPage() {
         </div>
         <div className="flex items-end">
           <Button 
-            className="w-full"
+            className="w-full border-white/5 hover:bg-white/[0.02] text-xs rounded-xl h-11 cursor-pointer font-bold"
             variant="outline" 
             onClick={() => {
               setSearch("");
@@ -224,38 +238,44 @@ export function AdminOrdersPage() {
         </div>
       </div>
 
-      <div className="border rounded-md">
+      <div className="bg-zinc-950/30 border-white/5 backdrop-blur-xl p-6 rounded-2xl border">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Order #</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Actions</TableHead>
+            <TableRow className="border-white/5 hover:bg-transparent">
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Order #</TableHead>
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Type</TableHead>
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Price</TableHead>
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Status</TableHead>
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Created</TableHead>
+              <TableHead className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.map((order: any) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium">{order.orderNumber}</TableCell>
-                <TableCell>{order.orderType} - {order.paymentType}</TableCell>
-                <TableCell>{formatINR(order.calculatedPrice || 0)}</TableCell>
+              <TableRow key={order.id} className="border-white/5 hover:bg-white/[0.01] transition-colors">
+                <TableCell className="font-bold text-xs text-zinc-200">{order.orderNumber}</TableCell>
+                <TableCell className="text-xs text-zinc-400">{order.orderType} - {order.paymentType}</TableCell>
+                <TableCell className="text-xs text-zinc-200 font-bold">{formatINR(order.calculatedPrice || 0)}</TableCell>
                 <TableCell>
-                  <Badge variant="outline">{order.status.replace(/_/g, " ")}</Badge>
+                  <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
+                    order.status === "FAILED" ? "bg-red-500/10 text-red-400 border border-red-500/20" :
+                    order.status === "DELIVERED" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+                    "bg-zinc-800 text-zinc-400 border border-white/5"
+                  }`}>
+                    {order.status.replace(/_/g, " ")}
+                  </span>
                 </TableCell>
-                <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                <TableCell className="space-x-2">
+                <TableCell className="text-xs text-zinc-500">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell className="text-right space-x-2">
                   <Button variant="outline" size="sm" onClick={() => {
                     setSelectedOrder(order);
                     setOverrideStatus(order.status);
-                  }}>
+                  }} className="border-white/5 hover:bg-white/[0.05] text-[10px] rounded-xl cursor-pointer">
                     Override
                   </Button>
-                  <Button variant="secondary" size="sm" onClick={() => {
+                  <Button size="sm" onClick={() => {
                     setReassignOrder(order);
-                  }}>
+                  }} className="bg-indigo-600 hover:bg-indigo-500 text-[10px] rounded-xl cursor-pointer">
                     {order.status === "PENDING" ? "Assign" : "Reassign"}
                   </Button>
                 </TableCell>
@@ -263,32 +283,41 @@ export function AdminOrdersPage() {
             ))}
             {orders.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-4">No orders found</TableCell>
+                <TableCell colSpan={6} className="text-center py-12">
+                  <Package className="h-10 w-10 text-zinc-600 mx-auto mb-3 opacity-50" />
+                  <p className="text-xs text-zinc-500 font-semibold">No orders matching these criteria.</p>
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      </div>
 
-      <div className="flex justify-between items-center mt-4">
-        <Button variant="outline" disabled={page === 1} onClick={() => setPage(p => p - 1)}>Previous</Button>
-        <span>Page {page} of {totalPages}</span>
-        <Button variant="outline" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Next</Button>
+        <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+          <Button variant="outline" disabled={page === 1} onClick={() => setPage(p => p - 1)} className="border-white/5 hover:bg-white/[0.02] text-xs rounded-xl cursor-pointer">
+            Previous
+          </Button>
+          <span className="text-xs text-zinc-400 font-semibold font-mono">Page {page} of {totalPages}</span>
+          <Button variant="outline" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="border-white/5 hover:bg-white/[0.02] text-xs rounded-xl cursor-pointer">
+            Next
+          </Button>
+        </div>
       </div>
 
       <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
-        <DialogContent>
+        <DialogContent className="bg-zinc-950 border border-white/10 rounded-2xl max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>Override Order Status</DialogTitle>
+            <DialogTitle className="text-lg font-black tracking-tight text-white">Override Order Status</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Current Status</Label>
-              <div className="p-2 bg-muted rounded-md">{selectedOrder?.status.replace(/_/g, " ")}</div>
+              <Label className="text-zinc-400 font-bold text-xs">Current Status</Label>
+              <div className="p-3 bg-white/[0.02] border border-white/5 text-zinc-300 rounded-xl text-xs font-semibold">
+                {selectedOrder?.status.replace(/_/g, " ")}
+              </div>
             </div>
             <div className="space-y-2">
-              <Label>New Status</Label>
-              <Select value={overrideStatus} onChange={(e) => setOverrideStatus(e.target.value)}>
+              <Label className="text-zinc-400 font-bold text-xs">New Target Status</Label>
+              <Select value={overrideStatus} onChange={(e) => setOverrideStatus(e.target.value)} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
                 <option value="PENDING">PENDING</option>
                 <option value="CONFIRMED">CONFIRMED</option>
                 <option value="ASSIGNED">ASSIGNED</option>
@@ -303,17 +332,20 @@ export function AdminOrdersPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Reason (Required)</Label>
+              <Label className="text-zinc-400 font-bold text-xs">Audit Reason</Label>
               <Input 
                 value={overrideReason} 
                 onChange={(e) => setOverrideReason(e.target.value)} 
                 placeholder="E.g. Operational delay, manually requested by customer..." 
+                className="bg-white/[0.02] border-white/10 text-white placeholder-zinc-500 rounded-xl h-11"
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedOrder(null)}>Cancel</Button>
-            <Button onClick={handleOverride} disabled={isPending || !overrideReason || overrideStatus === selectedOrder?.status}>
+          <DialogFooter className="pt-2 gap-2">
+            <Button variant="outline" onClick={() => setSelectedOrder(null)} className="border-white/5 hover:bg-white/[0.02] text-xs rounded-xl h-11 cursor-pointer">
+              Cancel
+            </Button>
+            <Button onClick={handleOverride} disabled={isPending || !overrideReason || overrideStatus === selectedOrder?.status} className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl h-11 cursor-pointer">
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Confirm Override
             </Button>
@@ -322,21 +354,21 @@ export function AdminOrdersPage() {
       </Dialog>
 
       <Dialog open={!!reassignOrder} onOpenChange={(open) => !open && setReassignOrder(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="bg-zinc-950 border border-white/10 rounded-2xl max-w-md p-6 max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg font-black tracking-tight text-white">
               {reassignOrder?.status === "PENDING" ? "Assign Agent" : "Reassign Agent"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {isLoadingCandidates ? (
-              <div className="flex justify-center p-4">
-                <Loader2 className="animate-spin text-primary" />
+              <div className="flex justify-center p-6">
+                <Loader2 className="animate-spin text-indigo-400" />
               </div>
             ) : (
               <div className="space-y-2">
-                <Label>Select Agent Candidate</Label>
-                <div className="max-h-[250px] overflow-y-auto border rounded-md divide-y">
+                <Label className="text-zinc-400 font-bold text-xs">Recommended Drivers</Label>
+                <div className="max-h-[250px] overflow-y-auto border border-white/5 rounded-xl divide-y divide-white/5 bg-zinc-900/50">
                   {(candidatesData || []).map((candidate: any, index: number) => {
                     const isRecommended = index === 0;
                     const isSelected = reassignAgentId === candidate.agent.userId;
@@ -344,36 +376,36 @@ export function AdminOrdersPage() {
                       <div
                         key={candidate.agent.userId}
                         onClick={() => setReassignAgentId(candidate.agent.userId)}
-                        className={`p-3 cursor-pointer transition-colors text-xs flex flex-col justify-between gap-1 items-start ${
-                          isSelected ? "bg-primary/5 border-primary ring-1 ring-primary" : "hover:bg-muted/50"
+                        className={`p-3 cursor-pointer transition-colors text-xs flex flex-col gap-2 items-start ${
+                          isSelected ? "bg-indigo-500/10 border-indigo-500/20" : "hover:bg-white/[0.02]"
                         }`}
                       >
                         <div className="w-full flex items-center justify-between">
-                          <span className="font-semibold text-foreground">{candidate.agent.name}</span>
-                          <span className="text-xs font-bold text-primary">{candidate.totalScore.toFixed(1)} pts</span>
+                          <span className="font-bold text-zinc-200">{candidate.agent.name}</span>
+                          <span className="text-[10px] font-black text-indigo-400 font-mono">{candidate.totalScore.toFixed(1)} PTS</span>
                         </div>
                         <div className="w-full flex items-center justify-between">
-                          <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                          <span className="text-[9px] font-bold text-zinc-500 uppercase">
                             {candidate.agent.vehicleType || "BIKE"}
                           </span>
                           {isRecommended && (
-                            <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">
-                              ⭐ Recommended Agent
+                            <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold px-1.5 py-0.5 rounded">
+                              ⭐ Recommended
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] text-muted-foreground grid grid-cols-2 gap-x-2 gap-y-0.5 w-full mt-1">
-                          <div>Rating: {candidate.agent.rating?.toFixed(1) || "5.0"}</div>
-                          <div>Acceptance: {candidate.agent.acceptanceRate || "100"}%</div>
+                        <div className="text-[9px] text-zinc-500 grid grid-cols-2 gap-x-2 gap-y-0.5 w-full mt-1 border-t border-white/5 pt-1.5">
+                          <div>Rating: ⭐ {candidate.agent.rating?.toFixed(1) || "5.0"}</div>
+                          <div>Accepts: {candidate.agent.acceptanceRate || "100"}%</div>
                           <div>Distance: {candidate.distanceKm !== undefined ? candidate.distanceKm.toFixed(1) + " km" : "N/A"}</div>
-                          <div>Active Orders: {candidate.agent.activeOrders}</div>
+                          <div>Capacity: {candidate.agent.activeOrders} active</div>
                         </div>
                       </div>
                     );
                   })}
                   {(candidatesData || []).length === 0 && (
-                    <div className="text-center p-4 text-muted-foreground text-xs">
-                      No online agents available
+                    <div className="text-center p-6 text-zinc-500 text-xs">
+                      No active agents in search grid
                     </div>
                   )}
                 </div>
@@ -382,23 +414,27 @@ export function AdminOrdersPage() {
             
             {reassignOrder?.status !== "PENDING" && (
               <div className="space-y-2">
-                <Label>Reason (Required)</Label>
+                <Label className="text-zinc-400 font-bold text-xs">Audit Reason</Label>
                 <Input 
                   value={reassignReason} 
                   onChange={(e) => setReassignReason(e.target.value)} 
                   placeholder="E.g. Vehicle breakdown, delay..." 
+                  className="bg-white/[0.02] border-white/10 text-white placeholder-zinc-500 rounded-xl h-11"
                 />
               </div>
             )}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setReassignOrder(null)}>Cancel</Button>
+          <DialogFooter className="pt-2 gap-2">
+            <Button variant="outline" onClick={() => setReassignOrder(null)} className="border-white/5 hover:bg-white/[0.02] text-xs rounded-xl h-11 cursor-pointer">
+              Cancel
+            </Button>
             <Button 
               onClick={handleReassign} 
               disabled={reassignPending || (reassignOrder?.status !== "PENDING" && !reassignReason) || !reassignAgentId}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl h-11 cursor-pointer"
             >
               {reassignPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Confirm Assignment
+              Confirm
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -406,3 +442,4 @@ export function AdminOrdersPage() {
     </div>
   );
 }
+

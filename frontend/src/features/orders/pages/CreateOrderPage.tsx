@@ -130,30 +130,32 @@ export function CreateOrderPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onPreSubmit)} className="space-y-6 pb-24">
+      <form onSubmit={handleSubmit(onPreSubmit)} className="space-y-8 pb-24">
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Create Order</h1>
-            <p className="text-muted-foreground">Fill in the details to generate a shipping quote.</p>
+            <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+              Create Order
+            </h1>
+            <p className="text-sm text-zinc-500 font-medium mt-1">Fill in the details to generate a shipping quote.</p>
           </div>
           {pricingSummary && (
-            <Button type="submit" size="lg" className="hidden lg:flex">
+            <Button type="submit" size="lg" className="hidden lg:flex bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer">
               Confirm & Create Order
             </Button>
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8 items-start">
+        <div className="grid gap-8 lg:grid-cols-3 lg:gap-8 items-start">
           
           {/* Left Column: Form Sections */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {user?.role === "ADMIN" && (
-              <div className="bg-white rounded-xl shadow-sm border p-6 space-y-4">
-                <h2 className="text-xl font-semibold">Customer Selection (Admin Override)</h2>
+              <div className="bg-zinc-950/40 border border-white/5 backdrop-blur-xl p-6 rounded-2xl space-y-4">
+                <h2 className="text-xl font-black tracking-tight text-white">Customer Selection (Admin Override)</h2>
                 <div className="space-y-2 max-w-md">
-                  <Label>Assign Order to Customer</Label>
-                  <Select {...register("customerId")} disabled={isLoadingCustomers}>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Assign Order to Customer</Label>
+                  <Select {...register("customerId")} disabled={isLoadingCustomers} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
                     <option value="">Select a customer (Optional)</option>
                     {customersData?.map((c: any) => (
                       <option key={c.id} value={c.id}>{c.name} ({c.email})</option>
@@ -161,8 +163,8 @@ export function CreateOrderPage() {
                   </Select>
                 </div>
                 <div className="space-y-2 max-w-md">
-                  <Label>Assignment Mode</Label>
-                  <Select {...register("assignmentMode")}>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Assignment Mode</Label>
+                  <Select {...register("assignmentMode")} className="bg-zinc-900 border-white/10 text-white rounded-xl h-11 px-3 cursor-pointer">
                     <option value="AUTO">Auto Assignment (Default)</option>
                     <option value="MANUAL">Manual Assignment</option>
                   </Select>
@@ -185,7 +187,7 @@ export function CreateOrderPage() {
 
             {/* Mobile Submit Button */}
             {pricingSummary && (
-              <Button type="submit" size="lg" className="w-full mt-6 lg:hidden">
+              <Button type="submit" size="lg" className="w-full mt-8 lg:hidden bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer">
                 Confirm & Create Order
               </Button>
             )}

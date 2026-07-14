@@ -1,38 +1,40 @@
 export function SettingsPage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold tracking-tight">System Settings</h1>
-      <div className="border rounded-md p-6 bg-card text-card-foreground">
-        <p className="text-muted-foreground mb-4">
-          Global settings for Volumetric Divisor, Base COD Surcharge, and system defaults.
-        </p>
-        
+    <div className="space-y-8 pb-12">
+      <div className="bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+        <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          System Settings
+        </h1>
+        <p className="text-sm text-zinc-500 font-medium mt-1">Global settings for Volumetric Divisor, Base COD Surcharge, and system defaults.</p>
+      </div>
+
+      <div className="bg-zinc-950/30 border-white/5 backdrop-blur-xl p-6 rounded-2xl border">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Volumetric Weight Divisor</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Volumetric Weight Divisor</label>
             <input 
               type="number" 
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-11 w-full rounded-xl border border-white/5 bg-white/[0.01] px-3 py-2 text-sm text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
               defaultValue={5000} 
               disabled 
             />
-            <p className="text-xs text-muted-foreground">Standard divisor used in L×B×H ÷ Divisor calculation.</p>
+            <p className="text-xs text-zinc-500 font-medium">Standard divisor used in L×B×H ÷ Divisor calculation.</p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Default COD Surcharge (Base)</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Default COD Surcharge (Base)</label>
             <input 
               type="number" 
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-11 w-full rounded-xl border border-white/5 bg-white/[0.01] px-3 py-2 text-sm text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
               defaultValue={50} 
               disabled 
             />
-            <p className="text-xs text-muted-foreground">Fallback COD surcharge when rate card does not specify one.</p>
+            <p className="text-xs text-zinc-500 font-medium">Fallback COD surcharge when rate card does not specify one.</p>
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t flex justify-end">
-          <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" disabled>
+        <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
+          <button className="inline-flex items-center justify-center rounded-xl text-xs font-bold bg-zinc-800 text-zinc-400 border border-white/5 px-4 h-11 disabled:cursor-not-allowed" disabled>
             Save Settings
           </button>
         </div>
@@ -40,3 +42,4 @@ export function SettingsPage() {
     </div>
   );
 }
+

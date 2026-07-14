@@ -140,30 +140,29 @@ export function AgentDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <Skeleton className="h-8 w-48 mb-2" />
-          <Skeleton className="h-4 w-96" />
+      <div className="space-y-8">
+        <div className="bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+          <Skeleton className="h-8 w-64 mb-2 rounded-xl bg-white/[0.02]" />
+          <Skeleton className="h-4 w-96 rounded-lg bg-white/[0.02]" />
         </div>
         <div className="grid gap-4 md:grid-cols-4">
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
+          {Array(4).fill(0).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-2xl bg-white/[0.02]" />
+          ))}
         </div>
-        <Skeleton className="h-[400px] w-full rounded-xl" />
+        <Skeleton className="h-[400px] w-full rounded-2xl bg-white/[0.02]" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-full">
+      <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
+        <div className="bg-red-500/10 text-red-400 p-5 rounded-2xl border border-red-500/20">
           <Activity className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-bold">Failed to load dashboard</h2>
-        <p className="text-muted-foreground max-w-md">
+        <h2 className="text-2xl font-black tracking-tight text-white">Failed to load dashboard</h2>
+        <p className="text-sm text-zinc-500 max-w-md">
           {error?.message || "There was an error communicating with the dispatch server."}
         </p>
       </div>
@@ -196,13 +195,13 @@ export function AgentDashboardPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-zinc-950/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">Agent Console</h1>
-          <p className="text-muted-foreground">Manage your route, update delivery steps, and view notifications in real-time.</p>
+          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Agent Console</h1>
+          <p className="text-sm text-zinc-500 font-medium mt-1">Manage your route, update delivery steps, and view notifications in real-time.</p>
         </div>
-        <Badge variant="outline" className="flex items-center gap-1.5 px-3 py-1 text-sm bg-green-500/10 text-green-500 border-green-500/20">
-          <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        <Badge variant="outline" className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           Active Geolocation
         </Badge>
       </div>
@@ -214,24 +213,24 @@ export function AgentDashboardPage() {
         {/* Left Column: Current Assignment Details */}
         <div className="lg:col-span-2 space-y-6">
           {currentOrder ? (
-            <Card className="border-border/80 shadow-lg relative overflow-hidden backdrop-blur-sm bg-card/60">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
-              <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-muted/50">
+            <Card className="bg-zinc-950/30 border-white/5 backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-white/5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
+                    <Badge variant="secondary" className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/15 text-[10px] font-black uppercase tracking-wider">
                       {currentOrder.status.replace(/_/g, " ")}
                     </Badge>
                     {currentOrder.orderType === "B2B" && (
-                      <Badge className="bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20">
+                      <Badge className="bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-black uppercase tracking-wider">
                         High Priority (B2B)
                       </Badge>
                     )}
                   </div>
-                  <CardTitle className="text-xl font-bold mt-1.5">{currentOrder.orderNumber}</CardTitle>
+                  <CardTitle className="text-xl font-black mt-1.5 text-white">{currentOrder.orderNumber}</CardTitle>
                 </div>
                 {currentAssignment && currentAssignment.status === "PENDING" && (
-                  <Badge variant="outline" className="text-amber-500 border-amber-500/30 bg-amber-500/5 animate-pulse">
+                  <Badge variant="outline" className="text-amber-400 border-amber-500/30 bg-amber-500/5 animate-pulse text-[10px] font-black uppercase tracking-wider">
                     PENDING ACCEPTANCE
                   </Badge>
                 )}
@@ -240,21 +239,21 @@ export function AgentDashboardPage() {
                 {/* Stepper Progress */}
                 <div className="hidden md:block">
                   <div className="flex justify-between relative">
-                    <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted z-0" />
+                    <div className="absolute top-4 left-0 right-0 h-0.5 bg-white/5 z-0" />
                     <div 
-                      className="absolute top-4 left-0 h-0.5 bg-primary transition-all duration-500 z-0" 
+                      className="absolute top-4 left-0 h-0.5 bg-indigo-500 transition-all duration-500 z-0" 
                       style={{ width: `${(getStepIndex(currentOrder.status) / (steps.length - 1)) * 100}%` }}
                     />
                     {steps.map((step, idx) => {
                       const isActive = getStepIndex(currentOrder.status) >= idx;
                       return (
                         <div key={idx} className="flex flex-col items-center z-10 text-center flex-1">
-                          <div className={`h-8.5 w-8.5 rounded-full flex items-center justify-center border text-xs font-semibold transition-all ${
-                            isActive ? "bg-primary border-primary text-primary-foreground shadow" : "bg-card border-muted text-muted-foreground"
+                          <div className={`h-8.5 w-8.5 rounded-full flex items-center justify-center border text-xs font-bold transition-all ${
+                            isActive ? "bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/20" : "bg-zinc-900 border-white/10 text-zinc-500"
                           }`}>
                             {idx + 1}
                           </div>
-                          <span className={`text-[11px] mt-2 font-medium ${isActive ? "text-foreground font-semibold" : "text-muted-foreground"}`}>{step.label}</span>
+                          <span className={`text-[10px] mt-2 font-bold uppercase tracking-wider ${isActive ? "text-zinc-100" : "text-zinc-500"}`}>{step.label}</span>
                         </div>
                       );
                     })}
@@ -264,70 +263,70 @@ export function AgentDashboardPage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-4">
                     <div className="flex gap-3">
-                      <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500 h-10 w-10 flex items-center justify-center shrink-0">
+                      <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 h-10 w-10 flex items-center justify-center shrink-0 border border-amber-500/20">
                         <MapPin className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">Pickup Address</p>
-                        <p className="text-sm font-medium mt-0.5">{currentOrder.pickupAddress}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Pickup Address</p>
+                        <p className="text-sm font-bold mt-0.5 text-zinc-200">{currentOrder.pickupAddress}</p>
                         {currentOrder.pickupContact && (
-                          <p className="text-xs text-muted-foreground mt-0.5">Contact: {currentOrder.pickupContact}</p>
+                          <p className="text-xs text-zinc-500 mt-0.5">Contact: {currentOrder.pickupContact}</p>
                         )}
                       </div>
                     </div>
 
                     <div className="flex gap-3">
-                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500 h-10 w-10 flex items-center justify-center shrink-0">
+                      <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 h-10 w-10 flex items-center justify-center shrink-0 border border-indigo-500/20">
                         <MapPin className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">Drop Address</p>
-                        <p className="text-sm font-medium mt-0.5">{currentOrder.dropAddress}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Drop Address</p>
+                        <p className="text-sm font-bold mt-0.5 text-zinc-200">{currentOrder.dropAddress}</p>
                         {currentOrder.dropContact && (
-                          <p className="text-xs text-muted-foreground mt-0.5">Contact: {currentOrder.dropContact}</p>
+                          <p className="text-xs text-zinc-500 mt-0.5">Contact: {currentOrder.dropContact}</p>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-3 bg-muted/40 p-4 rounded-xl text-sm">
+                  <div className="space-y-3 bg-white/[0.02] p-4 rounded-xl border border-white/5 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Customer:</span>
-                      <span className="font-semibold">{currentOrder.customer.name}</span>
+                      <span className="text-zinc-500 font-medium">Customer:</span>
+                      <span className="font-bold text-zinc-200">{currentOrder.customer.name}</span>
                     </div>
                     {currentOrder.customer.phone && (
                       <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Phone:</span>
+                        <span className="text-zinc-500 font-medium">Phone:</span>
                         <a 
                           href={`tel:${currentOrder.customer.phone}`} 
-                          className="flex items-center gap-1 text-primary hover:underline font-semibold"
+                          className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-bold hover:underline"
                         >
                           <Phone className="h-3.5 w-3.5" />
                           {currentOrder.customer.phone}
                         </a>
                       </div>
                     )}
-                    <Separator className="my-2" />
+                    <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Distance:</span>
-                      <span className="font-semibold">{currentOrder.distanceKm ? `${currentOrder.distanceKm} km` : "N/A"}</span>
+                      <span className="text-zinc-500 font-medium">Distance:</span>
+                      <span className="font-bold text-zinc-200">{currentOrder.distanceKm ? `${currentOrder.distanceKm} km` : "N/A"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Est. Duration:</span>
-                      <span className="font-semibold">
+                      <span className="text-zinc-500 font-medium">Est. Duration:</span>
+                      <span className="font-bold text-zinc-200">
                         {currentOrder.estimatedDuration 
                           ? `${Math.round(Number(currentOrder.estimatedDuration) / 60)} mins`
                           : "N/A"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Billable Weight:</span>
-                      <span className="font-semibold">{currentOrder.billableWeight ? `${currentOrder.billableWeight} kg` : "N/A"}</span>
+                      <span className="text-zinc-500 font-medium">Billable Weight:</span>
+                      <span className="font-bold text-zinc-200">{currentOrder.billableWeight ? `${currentOrder.billableWeight} kg` : "N/A"}</span>
                     </div>
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-white/5" />
 
                 {/* Workflow Actions */}
                 <div className="flex flex-wrap gap-3">
@@ -336,7 +335,7 @@ export function AgentDashboardPage() {
                       <Button 
                         onClick={() => acceptMutation.mutate(currentAssignment.id)} 
                         disabled={acceptMutation.isPending}
-                        className="bg-green-600 hover:bg-green-700 text-white font-semibold flex-1 md:flex-initial"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex-1 md:flex-initial rounded-xl cursor-pointer"
                       >
                         Accept Assignment
                       </Button>
@@ -344,7 +343,7 @@ export function AgentDashboardPage() {
                         variant="destructive"
                         onClick={() => rejectMutation.mutate(currentAssignment.id)} 
                         disabled={rejectMutation.isPending}
-                        className="flex-1 md:flex-initial"
+                        className="flex-1 md:flex-initial rounded-xl cursor-pointer"
                       >
                         Reject
                       </Button>
@@ -359,7 +358,7 @@ export function AgentDashboardPage() {
                             description: "En route to pickup location" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-primary hover:bg-primary/90 font-semibold"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Start Journey to Pickup
                         </Button>
@@ -373,7 +372,7 @@ export function AgentDashboardPage() {
                             description: "Agent arrived at pickup point" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-primary hover:bg-primary/90 font-semibold"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Arrived at Pickup
                         </Button>
@@ -387,7 +386,7 @@ export function AgentDashboardPage() {
                             description: "Package loaded and verified" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-primary hover:bg-primary/90 font-semibold"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Picked Up (Loaded)
                         </Button>
@@ -401,7 +400,7 @@ export function AgentDashboardPage() {
                             description: "In transit to customer destination" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-primary hover:bg-primary/90 font-semibold"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Start Transit to Destination
                         </Button>
@@ -415,7 +414,7 @@ export function AgentDashboardPage() {
                             description: "Out for delivery in customer area" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-primary hover:bg-primary/90 font-semibold"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Mark Out For Delivery
                         </Button>
@@ -429,7 +428,7 @@ export function AgentDashboardPage() {
                             description: "Package successfully delivered to customer" 
                           })}
                           disabled={updateStatusMutation.isPending}
-                          className="bg-green-600 hover:bg-green-700 text-white font-semibold"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl cursor-pointer"
                         >
                           Confirm Delivery (Complete)
                         </Button>
@@ -437,8 +436,8 @@ export function AgentDashboardPage() {
 
                       <Button 
                         variant="secondary"
-                        onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentOrder.pickupAddress)}&destination=${encodeURIComponent(currentOrder.dropAddress)}`, "_blank")}
-                        className="flex items-center gap-1"
+                        onClick={() => window.open(`https:// www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentOrder.pickupAddress)}&destination=${encodeURIComponent(currentOrder.dropAddress)}`, "_blank")}
+                        className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl cursor-pointer border border-white/5"
                       >
                         <Navigation className="h-4 w-4" />
                         Navigate (Maps)
@@ -449,13 +448,13 @@ export function AgentDashboardPage() {
               </CardContent>
             </Card>
           ) : (
-            <Card className="border-border/60 bg-muted/20 border-dashed flex flex-col items-center justify-center p-12 text-center space-y-4">
-              <div className="p-4 bg-muted rounded-full text-muted-foreground">
+            <Card className="bg-zinc-950/30 border-white/5 border-dashed backdrop-blur-xl flex flex-col items-center justify-center p-12 text-center space-y-4">
+              <div className="p-4 bg-white/[0.02] rounded-full text-zinc-500 border border-white/5">
                 <Truck className="h-10 w-10 animate-bounce" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">No Active Assignment</h3>
-                <p className="text-muted-foreground text-sm max-w-sm mt-1">
+                <h3 className="font-black text-lg text-zinc-200">No Active Assignment</h3>
+                <p className="text-zinc-500 text-sm max-w-sm mt-1 font-medium">
                   You are currently available! New orders assigned by the dispatch console will appear here instantly.
                 </p>
               </div>
@@ -463,10 +462,10 @@ export function AgentDashboardPage() {
           )}
 
           {/* Today's Route List */}
-          <Card className="border-border/80">
-            <CardHeader className="pb-3 border-b border-muted/50">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <Shield className="h-5 w-5 text-primary" />
+          <Card className="bg-zinc-950/30 border-white/5 backdrop-blur-xl">
+            <CardHeader className="pb-3 border-b border-white/5">
+              <CardTitle className="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                <Shield className="h-5 w-5 text-indigo-400" />
                 Today's Delivery Route
               </CardTitle>
             </CardHeader>
@@ -478,32 +477,32 @@ export function AgentDashboardPage() {
                     .map((o, index) => (
                       <div 
                         key={o.id} 
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
                           o.id === currentOrder?.id 
-                            ? "bg-primary/5 border-primary ring-1 ring-primary/20" 
-                            : "bg-muted/10 border-border hover:bg-muted/20"
+                            ? "bg-indigo-500/10 border-indigo-500/20 ring-1 ring-indigo-500/20" 
+                            : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center font-bold text-xs">
+                          <div className="h-7 w-7 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center font-bold text-xs text-zinc-400">
                             {index + 1}
                           </div>
                           <div>
-                            <p className="font-semibold text-sm">{o.orderNumber}</p>
-                            <p className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-md mt-0.5">{o.pickupAddress} → {o.dropAddress}</p>
+                            <p className="font-bold text-sm text-zinc-200">{o.orderNumber}</p>
+                            <p className="text-xs text-zinc-500 truncate max-w-[200px] md:max-w-md mt-0.5">{o.pickupAddress} → {o.dropAddress}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs capitalize">
+                          <Badge variant="outline" className="text-[10px] font-black uppercase tracking-wider border-white/10 text-zinc-400 bg-white/[0.02]">
                             {o.status.toLowerCase().replace(/_/g, " ")}
                           </Badge>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          <ChevronRight className="h-4 w-4 text-zinc-500" />
                         </div>
                       </div>
                     ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-6">No route sequence to display.</p>
+                <p className="text-sm text-zinc-500 text-center py-6 font-medium">No route sequence to display.</p>
               )}
             </CardContent>
           </Card>
@@ -513,30 +512,30 @@ export function AgentDashboardPage() {
         <div className="space-y-6">
           {/* Tracking Progress timeline of active order */}
           {currentOrder && (
-            <Card className="border-border/80">
-              <CardHeader className="pb-3 border-b border-muted/50">
-                <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
+            <Card className="bg-zinc-950/30 border-white/5 backdrop-blur-xl">
+              <CardHeader className="pb-3 border-b border-white/5">
+                <CardTitle className="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-indigo-400" />
                   Live Tracking Event Log
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-4 max-h-[280px] overflow-y-auto space-y-4">
                 {currentOrder.trackingEvents && currentOrder.trackingEvents.length > 0 ? (
-                  <div className="relative border-l border-muted pl-4 space-y-4">
+                  <div className="relative border-l border-white/5 pl-4 space-y-4">
                     {currentOrder.trackingEvents.map((evt, idx) => (
                       <div key={evt.id} className="relative">
                         <span className={`absolute -left-[21px] mt-1 h-2.5 w-2.5 rounded-full border ${
-                          idx === 0 ? "bg-primary border-primary animate-ping" : "bg-muted border-border"
+                          idx === 0 ? "bg-indigo-500 border-indigo-500 animate-ping" : "bg-zinc-800 border-white/10"
                         }`} />
                         <span className={`absolute -left-[21px] mt-1 h-2.5 w-2.5 rounded-full border ${
-                          idx === 0 ? "bg-primary border-primary" : "bg-muted border-border"
+                          idx === 0 ? "bg-indigo-500 border-indigo-500" : "bg-zinc-800 border-white/10"
                         }`} />
                         <div>
-                          <p className={`text-xs font-semibold ${idx === 0 ? "text-primary" : "text-foreground"}`}>
+                          <p className={`text-xs font-bold ${idx === 0 ? "text-indigo-400" : "text-zinc-300"}`}>
                             {evt.status.replace(/_/g, " ")}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">{evt.description}</p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-xs text-zinc-500 mt-0.5">{evt.description}</p>
+                          <p className="text-[10px] text-zinc-600 mt-0.5">
                             {new Date(evt.createdAt).toLocaleTimeString()}
                           </p>
                         </div>
@@ -544,36 +543,36 @@ export function AgentDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">No tracking event logged yet.</p>
+                  <p className="text-xs text-zinc-500">No tracking event logged yet.</p>
                 )}
               </CardContent>
             </Card>
           )}
 
           {/* Recent Notifications Alert Panel */}
-          <Card className="border-border/80">
-            <CardHeader className="pb-3 border-b border-muted/50 flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <Bell className="h-5 w-5 text-primary animate-bounce" />
+          <Card className="bg-zinc-950/30 border-white/5 backdrop-blur-xl">
+            <CardHeader className="pb-3 border-b border-white/5 flex flex-row items-center justify-between">
+              <CardTitle className="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                <Bell className="h-5 w-5 text-indigo-400 animate-bounce" />
                 Live Dispatch Alerts
               </CardTitle>
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/20">{notifications?.length || 0} New</Badge>
+              <Badge className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-black uppercase tracking-wider">{notifications?.length || 0} New</Badge>
             </CardHeader>
             <CardContent className="pt-4 max-h-[300px] overflow-y-auto">
               {notifications && notifications.length > 0 ? (
                 <div className="space-y-3">
                   {notifications.map((notif) => (
-                    <div key={notif.id} className="p-3 rounded-lg bg-muted/30 border border-muted/40 space-y-1">
+                    <div key={notif.id} className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold text-xs text-foreground">{notif.title}</p>
-                        <span className="text-[9px] text-muted-foreground">{new Date(notif.createdAt).toLocaleTimeString()}</span>
+                        <p className="font-bold text-xs text-zinc-200">{notif.title}</p>
+                        <span className="text-[9px] text-zinc-500">{new Date(notif.createdAt).toLocaleTimeString()}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">{notif.body}</p>
+                      <p className="text-xs text-zinc-500 mt-0.5">{notif.body}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-6">No new notifications from the dispatch hub.</p>
+                <p className="text-xs text-zinc-500 text-center py-6 font-medium">No new notifications from the dispatch hub.</p>
               )}
             </CardContent>
           </Card>
@@ -582,33 +581,33 @@ export function AgentDashboardPage() {
 
       {/* Tab Filter view for All Orders */}
       <div>
-        <div className="flex border-b border-border space-x-6 mb-6">
+        <div className="flex border-b border-white/5 space-x-6 mb-6">
           <button
             onClick={() => setActiveTab("assigned")}
-            className={`pb-2 text-sm font-semibold border-b-2 transition-all ${
+            className={`pb-2 text-sm font-bold border-b-2 transition-all ${
               activeTab === "assigned"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-indigo-500 text-indigo-400"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
             }`}
           >
             Assigned Orders ({orders?.filter(o => o.status === "ASSIGNED").length || 0})
           </button>
           <button
             onClick={() => setActiveTab("active")}
-            className={`pb-2 text-sm font-semibold border-b-2 transition-all ${
+            className={`pb-2 text-sm font-bold border-b-2 transition-all ${
               activeTab === "active"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-indigo-500 text-indigo-400"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
             }`}
           >
             Active Deliveries ({orders?.filter(o => ["PICKUP_ASSIGNED", "ARRIVED_AT_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY"].includes(o.status)).length || 0})
           </button>
           <button
             onClick={() => setActiveTab("completed")}
-            className={`pb-2 text-sm font-semibold border-b-2 transition-all ${
+            className={`pb-2 text-sm font-bold border-b-2 transition-all ${
               activeTab === "completed"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-indigo-500 text-indigo-400"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
             }`}
           >
             Completed ({orders?.filter(o => ["DELIVERED", "FAILED", "CANCELLED"].includes(o.status)).length || 0})
