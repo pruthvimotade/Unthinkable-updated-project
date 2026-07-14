@@ -2,7 +2,8 @@
 
 # 🚚 Last-Mile Delivery Tracker
 
-**A production-inspired logistics management platform** — automated pricing, intelligent delivery-agent assignment, live order tracking, and real-time customer notifications.
+**A logistics platform that actually thinks like one.**
+Dynamic pricing, zone-aware routing, smart agent assignment, and live order tracking — built the way a real courier backend would need to work, not the way a tutorial says it should.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](#)
@@ -10,47 +11,52 @@
 [![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)](#)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)](#)
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=prisma&logoColor=white)](#)
-[![JWT](https://img.shields.io/badge/Auth-JWT-black?style=flat&logo=jsonwebtokens)](#)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 
-[Live Demo](#) · [API Docs](#api-documentation) · [Report Bug](#) · [Request Feature](#)
+[Live Demo](#) · [API Docs](./docs/API_DOCUMENTATION.md) · [Database Schema](./docs/DATABASE_SCHEMA.md) · [Report Bug](../../issues) · [Request Feature](../../issues)
 
 </div>
 
 ---
 
-## 📖 Overview
+## Why I built this
 
-**Last-Mile Delivery Tracker** is a full-stack logistics platform built to simulate the systems that power real-world courier and delivery companies — the kind of engine behind checkout-page delivery estimates, live "your order is out for delivery" tracking, and the dispatch logic that decides which driver gets which job.
+Most "delivery app" projects stop at CRUD — create an order, save it, show it in a list. That's not really what makes logistics hard.
 
-Rather than another CRUD demo, this project tackles the operational problems logistics companies actually deal with:
+The interesting problems are things like: *how do you price a shipment fairly without hardcoding numbers into your code? How do you know if a delivery is local or cross-city? How do you pick the right driver out of dozens who are available? How do you keep a tamper-proof history of a package's journey?*
 
-| Problem | How it's solved |
-|---|---|
-| **Dynamic pricing** | Rate-card-driven pricing engine — zero hardcoded prices |
-| **Zone-based delivery** | Pickup/drop addresses resolved to zones to classify intra- vs. inter-zone shipments |
-| **Volumetric vs. actual weight** | Industry-standard `(L × W × H) / 5000` formula, billed on whichever is greater |
-| **Delivery agent assignment** | Manual admin assignment or automatic assignment by availability, zone, and capacity |
-| **Order lifecycle & tracking** | A finite state machine with a full, immutable timeline of every status change |
-| **Access control** | JWT-based auth with distinct Customer / Admin / Agent roles and permissions |
+I wanted to build something closer to what actually runs behind a company like Delhivery or Shiprocket — even at a small scale — so I built Last-Mile Delivery Tracker as a full end-to-end system: a pricing engine driven entirely by configurable rate cards, zone-based routing logic, an agent-assignment system that can run manually or automatically, and an immutable tracking timeline for every order, wrapped in a proper role-based (Customer / Agent / Admin) application.
+
+It's not a demo I'm trying to dress up — it's the kind of backend problem I enjoy solving.
 
 ---
 
-## ✨ Key Features
+## What it actually does
+
+| Problem | How this project solves it |
+|---|---|
+| **Pricing shouldn't be hardcoded** | Rate-card-driven pricing engine — admins configure slabs, the system does the math |
+| **Distance/zone affects cost** | Pickup and drop addresses resolve to zones, classifying every shipment as intra- or inter-zone |
+| **Weight isn't just weight** | Uses the industry-standard volumetric weight formula and bills whichever figure is higher |
+| **Someone has to deliver it** | Orders can be assigned manually by an admin, or automatically based on agent availability, zone, and load |
+| **"Where's my order?" needs a real answer** | Every status change is written as a permanent, append-only tracking event — never overwritten |
+| **Not everyone should see everything** | JWT-based auth with genuinely separate Customer / Agent / Admin permissions, not just a hidden UI toggle |
+
+---
+
+## Feature breakdown
 
 <table>
 <tr>
 <td valign="top" width="33%">
 
 ### 👤 Customer
-- Registration & secure login
-- JWT-based authentication
+- Register & log in securely
 - Create delivery orders
 - Google Maps address autocomplete
-- Automatic shipping-charge calculation
-- Live order tracking
-- Full tracking timeline
-- Email notifications
+- Instant shipping-cost calculation
+- Live order tracking + full timeline
+- Email notifications at every milestone
 - Order history
 
 </td>
@@ -59,23 +65,23 @@ Rather than another CRUD demo, this project tackles the operational problems log
 ### 🛠️ Admin
 - Analytics dashboard
 - Manage zones & service areas
-- Configure rate cards
-- Manage delivery agents & customers
+- Configure rate cards (no code changes needed)
+- Manage agents & customers
 - Create orders on a customer's behalf
-- Manual **and** automatic agent assignment
-- Override order status
-- Order filtering & search
-- Delivery analytics
+- Manual **or** automatic agent assignment
+- Override order status when things go sideways
+- Search & filter across all orders
 
 </td>
 <td valign="top" width="33%">
 
 ### 🏍️ Delivery Agent
 - Secure login
-- Assigned-orders dashboard
+- Dashboard of assigned orders
+- Accept or reject assignments
 - Update delivery status in real time
 - Delivery history
-- End-to-end order completion workflow
+- Full pickup-to-delivery workflow
 
 </td>
 </tr>
@@ -83,11 +89,9 @@ Rather than another CRUD demo, this project tackles the operational problems log
 
 ---
 
-## 🚀 Core Functionalities
+## How the pricing engine works
 
-### 💰 Intelligent Pricing Engine
-
-Shipping charges are calculated automatically from configurable business rules — **no price is ever hardcoded**; every rate is admin-configurable via Rate Cards.
+This was the part I spent the most time on, because it's the part most tutorial projects skip. Every shipping charge is computed live from rules an admin configures — nothing is ever hardcoded in application code.
 
 ```
 Actual Weight ──┐
@@ -106,31 +110,30 @@ Volumetric Wt ──┘              │
                        Final Shipping Charge
 ```
 
-**Volumetric weight** uses the industry-standard formula:
+Volumetric weight uses the same formula couriers like FedEx and DHL actually use:
 
 $$\text{Volumetric Weight} = \frac{L \times W \times H}{5000}$$
 
-### 📍 Zone Detection
+Whichever number is bigger — actual or volumetric — is what gets billed. This alone is why a lot of "small but bulky" packages cost more to ship than people expect, and now the platform models that correctly instead of ignoring it.
 
-Every service area belongs to a logistics zone. On order creation:
+**Zone detection** happens the same way real logistics networks do it: pickup and drop addresses each resolve to an Area, and every Area belongs to a Zone. If the pickup and drop zones match, it's priced as intra-zone; if not, inter-zone — and that classification feeds straight into the rate card lookup.
 
-```
-Pickup Address → Pickup Area → Pickup Zone
-   Drop Address → Drop Area   → Drop Zone
-```
+---
 
-The resulting zone pair determines whether a shipment is priced as **Intra-Zone** or **Inter-Zone**, which feeds directly into the pricing engine.
+## Agent assignment
 
-### 🤖 Smart Agent Assignment
-
-| Mode | Behavior |
+| Mode | What happens |
 |---|---|
-| **Manual** | Admin selects a delivery agent directly |
-| **Automatic** | The platform selects the best available agent based on availability, assigned zone, and current delivery capacity |
+| **Manual** | An admin picks the agent directly — useful for VIP orders or edge cases |
+| **Automatic** | The system picks the best available agent based on live availability, assigned zone, and current delivery load |
 
-### 📦 Order Lifecycle
+Both paths converge on the same `Assignment` record, so tracking and history work identically no matter how the order got assigned.
 
-Every order moves through a well-defined state machine, with every transition logged as an immutable tracking event:
+---
+
+## Order lifecycle
+
+Every order moves through a defined state machine, and **every transition is logged, never overwritten** — so the tracking timeline is a real audit trail, not just a "current status" field.
 
 ```mermaid
 flowchart LR
@@ -140,32 +143,19 @@ flowchart LR
     D --> E[Out For Delivery]
     E --> F[Delivered]
     E -.failure.-> G[Failed Delivery]
-    G --> H[Customer Notification]
-    H --> I[Reschedule]
-    I --> J[Agent Reassignment]
+    G --> H[Customer Notified]
+    H --> I[Rescheduled]
+    I --> J[Reassigned to Agent]
     J --> C
 ```
 
-### 🧾 Tracking History
+Each tracking record captures the **status**, **timestamp**, **who made the change**, and **remarks** — enough to reconstruct exactly what happened to any order, at any point.
 
-Every status change writes a permanent tracking record capturing:
-
-- **Status**
-- **Timestamp**
-- **Updated by**
-- **Remarks**
-
-giving customers — and admins — full delivery transparency.
-
-### 📧 Notifications
-
-Customers are notified automatically at every key milestone:
-
-`Order Created` → `Agent Assigned` → `Picked Up` → `In Transit` → `Out for Delivery` → `Delivered` / `Delivery Failed` → `Rescheduled`
+Customers get notified automatically at every milestone: order created, agent assigned, picked up, in transit, out for delivery, delivered (or failed, with a reschedule path).
 
 ---
 
-## 🏗️ System Architecture
+## System architecture
 
 ```mermaid
 flowchart TD
@@ -181,20 +171,24 @@ flowchart TD
     ORM --> DB[("PostgreSQL")]
 ```
 
+The backend follows a **controller → service → repository** pattern, which kept the pricing and assignment logic testable and out of the route handlers. Full breakdowns of the API and database live in `/docs` — linked below.
+
 ---
 
-## 🧰 Tech Stack
+## Tech stack
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React · TypeScript · Vite · React Router · React Hook Form · Tailwind CSS · Axios · Google Maps API |
-| **Backend** | Node.js · Express.js · TypeScript · Prisma ORM · JWT Authentication · Bcrypt · Zod Validation · Nodemailer |
-| **Database** | PostgreSQL, managed via Prisma ORM |
-| **Deployment** | Frontend → Vercel · Backend → Render · Database → PostgreSQL (managed) |
+| **Frontend** | React, TypeScript, Vite, React Router, React Hook Form, Tailwind CSS, Axios, Google Maps API |
+| **Backend** | Node.js, Express.js, TypeScript, Prisma ORM, JWT, Bcrypt, Zod, Nodemailer |
+| **Database** | PostgreSQL |
+| **Deployment** | Vercel (frontend) · Render (backend) · managed PostgreSQL |
+
+I chose Prisma over a raw query builder mainly for the migration workflow and type safety across the pricing and assignment logic, where a typo in a field name would otherwise fail silently at runtime. Zod handles request validation at the boundary so bad input never reaches the service layer.
 
 ---
 
-## 📂 Project Structure
+## Project structure
 
 ```
 last-mile-delivery-tracker/
@@ -212,43 +206,43 @@ last-mile-delivery-tracker/
 
 ---
 
-## 🔐 Authentication
+## Authentication & access control
 
-Role-based authentication across three roles — **Customer**, **Delivery Agent**, and **Administrator** — implemented with:
+Three roles — Customer, Delivery Agent, Administrator — each with genuinely different permissions enforced at the API layer, not just hidden in the UI:
 
-- JWT access tokens
-- Password hashing via bcrypt
-- Protected routes
-- Role-based authorization middleware
+- JWT access + refresh tokens
+- Passwords hashed with bcrypt, never stored in plain text
+- Role-based authorization middleware on every protected route
+- Centralized error handling so failures return consistent, predictable responses
 
 ---
 
-## 🗄️ Database Models
+## Database at a glance
 
 | Entity | Purpose |
 |---|---|
-| `Users` | Customers, agents, and admins with role-based fields |
-| `Orders` | Core delivery order records |
-| `AgentStatus` | Delivery agent availability, capacity, and location |
-| `Zones` / `Areas` | Geographic hierarchy driving pricing and assignment |
-| `RateCards` | Admin-configurable pricing rules |
-| `TrackingEvent` | Immutable status-change history per order |
-| `Assignment` | Order ↔ agent assignment records |
+| `Users` | Customers, agents, and admins, distinguished by role |
+| `Orders` | The core delivery record — pricing, addresses, status |
+| `AgentStatus` | Live agent availability, zone, and current load |
+| `Zones` / `Areas` | The geographic hierarchy driving pricing and assignment |
+| `RateCards` | Admin-configurable pricing rules — no hardcoded prices |
+| `Assignment` | Links an order to the agent delivering it |
+| `TrackingEvent` | Immutable, append-only status history per order |
 
-Full schema documentation: [`docs/DATABASE_SCHEMA.md`](./docs/DATABASE_SCHEMA.md)
+Full ER diagram and field-level breakdown: [`docs/DATABASE_SCHEMA.md`](./docs/DATABASE_SCHEMA.md)
 
 ---
 
-## ⚡ Getting Started
+## Getting started
 
-### Clone the repository
+### 1. Clone it
 
 ```bash
 git clone https://github.com/pruthvimotade/last-mile-delivery-tracker.git
 cd last-mile-delivery-tracker
 ```
 
-### Backend setup
+### 2. Set up the backend
 
 ```bash
 cd backend
@@ -260,7 +254,7 @@ npm run seed
 npm run dev
 ```
 
-### Frontend setup
+### 3. Set up the frontend
 
 ```bash
 cd frontend
@@ -268,7 +262,7 @@ npm install
 npm run dev
 ```
 
-### Environment variables
+### 4. Environment variables
 
 Create a `.env` file inside `backend/`:
 
@@ -287,9 +281,11 @@ BACKEND_URL=
 
 ---
 
-## 📘 API Documentation
+## API documentation
 
-Interactive Swagger documentation is available once the backend is running:
+Full endpoint reference, request/response examples, and status-code conventions: [`docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md)
+
+Interactive Swagger docs (once the backend is running):
 
 | Environment | URL |
 |---|---|
@@ -298,39 +294,39 @@ Interactive Swagger documentation is available once the backend is running:
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-> Add screenshots to `screenshots/` — recommended set: Login · Register · Customer Dashboard · Admin Dashboard · Create Order · Live Tracking · Analytics · Rate Cards · Agent Dashboard
+> Coming soon — Login · Customer Dashboard · Create Order · Live Tracking · Admin Analytics · Rate Card Config · Agent Dashboard
 
 ---
 
-## 🛣️ Roadmap
+## What's next
 
-- [ ] SMS notifications
-- [ ] Live GPS tracking
-- [ ] Route optimization
-- [ ] AI-based delivery time prediction
-- [ ] Driver performance analytics
-- [ ] Payment gateway integration
-- [ ] Push notifications
+Things I'd want to add if this went further:
+
+- [ ] Real-time GPS tracking instead of manual status updates
+- [ ] Route optimization for agents with multiple stops
+- [ ] SMS notifications alongside email
+- [ ] Delivery-time prediction based on historical data
+- [ ] Payment gateway integration for prepaid orders
 - [ ] Multi-warehouse support
-- [ ] Delivery heatmaps
-- [ ] Mobile application
+- [ ] Driver performance analytics
+- [ ] Delivery heatmaps for zone planning
+- [ ] Push notifications
+- [ ] A proper mobile app for agents
 
 ---
 
-## 👨‍💻 Author
+## About me
 
 **Pruthviraj Motade**
-Computer Engineering Undergraduate · Vishwakarma Institute of Technology, Pune
+Computer Engineering undergrad at Vishwakarma Institute of Technology, Pune. I like building systems where the "boring" business logic — pricing, state machines, permissions — is actually the interesting part.
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/pruthvimotade)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pruthvimotade/)
 
 ---
 
-## 📄 License
+## License
 
-This project was built as a full-stack logistics engineering deep-dive — demonstrating backend architecture, pricing-engine design, intelligent delivery assignment, and scalable software engineering practices end to end.
-
-Licensed under the [MIT License](./LICENSE). Fork it, explore it, learn from it.
+MIT — see [`LICENSE`](./LICENSE). Fork it, break it, learn from it.
