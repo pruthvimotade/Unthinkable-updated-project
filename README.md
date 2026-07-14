@@ -1,4 +1,4 @@
-::: {align="center"}
+
 # 🚚 Last-Mile Delivery Tracker
 
 **A production-inspired logistics management platform built with React,
@@ -25,7 +25,8 @@ tracking • Role-based access control
 **Documentation:** [API Documentation](./API_DOCUMENTATION.md) •
 [Database Schema](./DATABASE_SCHEMA.md) • [Rate
 Calculation](./RATE_CALCULATION.md) • [Deployment](./DEPLOYMENT.md) •
-[System Design](./SYSTEM%20Design.md)
+[System Design](./SYSTEM_DESIGN.md)
+
 :::
 
 ------------------------------------------------------------------------
