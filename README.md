@@ -11,37 +11,37 @@ A production-inspired logistics management platform built with React, TypeScript
 - **Frontend:** https://unthinkable-updated-project.vercel.app/
 - **Backend API:** https://unthinkable-updated-project.onrender.com
 - **Swagger:** https://unthinkable-updated-project.onrender.com/api-docs
-- **Documentation:** [API Documentation](https://github.com/pruthvimotade/Unthinkable-updated-project/blob/main/API_DOCUMENTATION.md) • [Database Schema](https://github.com/pruthvimotade/Unthinkable-updated-project/blob/main/DATABASE_SCHEMA.md) • [Rate Calculation](https://github.com/pruthvimotade/Unthinkable-updated-project/blob/main/RATE_CALCULATION.md) • [Deployment](https://github.com/pruthvimotade/Unthinkable-updated-project/blob/main/DEPLOYMENT.md) • [System Design](https://github.com/pruthvimotade/Unthinkable-updated-project/blob/main/SYSTEM_DESIGN.md)
+- **Documentation:** [API Documentation](./API_DOCUMENTATION.md) • [Database Schema](./DATABASE_SCHEMA.md) • [Rate Calculation](./RATE_CALCULATION.md) • [Deployment](./DEPLOYMENT.md) • [System Design](./SYSTEM_DESIGN.md)
 
 ---
 
 ## 📸 Screenshots
 
 ### Landing Page
-![Landing Page](docs/screenshots/landing-page.png)
+![Landing Page](landing-page.png)
 *Public marketing homepage with live platform metrics (total deliveries, active drivers, routing precision, API response time).*
 
 ### Customer Portal
 
 | Login | Dashboard |
 |---|---|
-| ![Customer Login](docs/screenshots/customer-login.png) | ![Customer Dashboard](docs/screenshots/customer-dashboard.png) |
+| ![Customer Login](customer-login.png) | ![Customer Dashboard](customer-dashboard.png) |
 
-![Create Order](docs/screenshots/create-order.png)
+![Create Order](create-order.png)
 *Order creation flow with pickup/drop address, package dimensions, and real-time price calculation.*
 
 ### Admin Console
 
 | Operations Hub | Orders Queue |
 |---|---|
-| ![Admin Dashboard](docs/screenshots/admin-dashboard.png) | ![Admin Orders Queue](docs/screenshots/admin-orders-queue.png) |
+| ![Admin Dashboard](admin-dashboard.png) | ![Admin Orders Queue](admin-orders-queue.png) |
 
 | Rate Cards Manager | Staff Management |
 |---|---|
-| ![Rate Cards](docs/screenshots/admin-rate-cards.png) | ![Staff Management](docs/screenshots/admin-staff-management.png) |
+| ![Rate Cards](admin-rate-cards.png) | ![Staff Management](admin-staff-management.png) |
 
 ### Agent Workspace
-![Agent Workspace](docs/screenshots/agent-workspace.png)
+![Agent Workspace](agent-workspace.png)
 *Delivery agents accept/reject assignments and track their route stop-by-stop, with live dispatch alerts.*
 
 ---
@@ -176,16 +176,23 @@ Unthinkable-updated-project/
 │
 ├── backend/
 ├── frontend/
-├── Engineering/
 ├── docs/
-│   └── screenshots/
 │
 ├── README.md
 ├── API_DOCUMENTATION.md
 ├── DATABASE_SCHEMA.md
 ├── RATE_CALCULATION.md
 ├── DEPLOYMENT.md
-├── System Design.md
+├── SYSTEM_DESIGN.md
+├── landing-page.png
+├── customer-login.png
+├── customer-dashboard.png
+├── create-order.png
+├── admin-dashboard.png
+├── admin-orders-queue.png
+├── admin-rate-cards.png
+├── admin-staff-management.png
+├── agent-workspace.png
 ├── package.json
 └── package-lock.json
 ```
@@ -244,7 +251,7 @@ BACKEND_URL=
 - Database Schema → [./DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)
 - Deployment Guide → [./DEPLOYMENT.md](./DEPLOYMENT.md)
 - Rate Calculation → [./RATE_CALCULATION.md](./RATE_CALCULATION.md)
-- System Design → [./System Design.md](./System%20Design.md)
+- System Design → [./SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md)
 
 ---
 
