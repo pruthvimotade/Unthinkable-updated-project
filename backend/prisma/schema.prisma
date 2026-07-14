@@ -8,29 +8,29 @@ datasource db {
 }
 
 model User {
-  id                  String         @id @default(uuid()) @db.Uuid
-  email               String         @unique
-  phone               String?        @unique
-  password            String
-  name                String
-  role                UserRole
-  status              UserStatus     @default(ACTIVE)
-  isVerified          Boolean        @default(false) @map("is_verified")
-  isPhoneVerified     Boolean        @default(false) @map("is_phone_verified")
-  verificationTokenHash  String?    @map("verification_token_hash")
-  verificationExpiresAt  DateTime?  @map("verification_expires_at")
-  resetPasswordTokenHash String?    @map("reset_password_token_hash")
-  resetPasswordExpiresAt DateTime?  @map("reset_password_expires_at")
-  failedLoginAttempts   Int            @default(0) @map("failed_login_attempts")
-  lockoutUntil          DateTime?      @map("lockout_until")
-  createdAt           DateTime       @default(now()) @map("created_at")
-  updatedAt           DateTime       @updatedAt @map("updated_at")
-  agentStatus         AgentStatus?
-  agentAssignments    Assignment[]   @relation("AgentAssignments")
-  assignerAssignments Assignment[]   @relation("AssignerAssignments")
-  notifications       Notification[]
-  customerOrders      Order[]        @relation("CustomerOrders")
-  overrides         StatusOverrideLog[]
+  id                     String              @id @default(uuid()) @db.Uuid
+  email                  String              @unique
+  phone                  String?             @unique
+  password               String
+  name                   String
+  role                   UserRole
+  status                 UserStatus          @default(ACTIVE)
+  createdAt              DateTime            @default(now()) @map("created_at")
+  updatedAt              DateTime            @updatedAt @map("updated_at")
+  isVerified             Boolean             @default(false) @map("is_verified")
+  resetPasswordExpiresAt DateTime?           @map("reset_password_expires_at")
+  resetPasswordTokenHash String?             @map("reset_password_token_hash")
+  verificationExpiresAt  DateTime?           @map("verification_expires_at")
+  verificationTokenHash  String?             @map("verification_token_hash")
+  failedLoginAttempts    Int                 @default(0) @map("failed_login_attempts")
+  lockoutUntil           DateTime?           @map("lockout_until")
+  isPhoneVerified        Boolean             @default(false) @map("is_phone_verified")
+  agentStatus            AgentStatus?
+  agentAssignments       Assignment[]        @relation("AgentAssignments")
+  assignerAssignments    Assignment[]        @relation("AssignerAssignments")
+  notifications          Notification[]
+  customerOrders         Order[]             @relation("CustomerOrders")
+  overrides              StatusOverrideLog[]
 
   @@index([role])
   @@index([status])
@@ -58,11 +58,10 @@ model Area {
   pincode      String
   zoneId       String   @map("zone_id") @db.Uuid
   isActive     Boolean  @default(true) @map("is_active")
-  // Geographic centroid of this area — used for distance-based agent scoring
-  latitude     Decimal? @db.Decimal(10, 7)
-  longitude    Decimal? @db.Decimal(10, 7)
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
+  latitude     Decimal? @db.Decimal(10, 7)
+  longitude    Decimal? @db.Decimal(10, 7)
   zone         Zone     @relation(fields: [zoneId], references: [id])
   dropOrders   Order[]  @relation("DropArea")
   pickupOrders Order[]  @relation("PickupArea")
@@ -76,15 +75,15 @@ model RateCard {
   id           String    @id @default(uuid()) @db.Uuid
   name         String
   rateType     RateType  @map("rate_type")
-  orderType    OrderType @map("order_type")
   basePrice    Decimal   @map("base_price") @db.Decimal(10, 2)
   perUnitPrice Decimal?  @map("per_unit_price") @db.Decimal(10, 2)
   minWeight    Decimal?  @map("min_weight") @db.Decimal(10, 3)
   maxWeight    Decimal?  @map("max_weight") @db.Decimal(10, 3)
-  codSurcharge Decimal   @default(0) @map("cod_surcharge") @db.Decimal(10, 2)
   isActive     Boolean   @default(true) @map("is_active")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
+  codSurcharge Decimal   @default(0) @map("cod_surcharge") @db.Decimal(10, 2)
+  orderType    OrderType @map("order_type")
 
   @@index([rateType, orderType])
   @@index([isActive])
@@ -92,46 +91,46 @@ model RateCard {
 }
 
 model Order {
-  id                  String          @id @default(uuid()) @db.Uuid
-  orderNumber         String          @unique @map("order_number")
-  customerId          String          @map("customer_id") @db.Uuid
-  pickupAreaId        String?         @map("pickup_area_id") @db.Uuid
-  dropAreaId          String?         @map("drop_area_id") @db.Uuid
-  pickupAddress       String          @map("pickup_address")
-  pickupAddressLine2  String?         @map("pickup_address_line2")
-  pickupContact       String          @map("pickup_contact")
-  dropAddress         String          @map("drop_address")
-  dropAddressLine2    String?         @map("drop_address_line2")
-  dropContact         String          @map("drop_contact")
-  pickupLatitude      Decimal?        @map("pickup_latitude") @db.Decimal(10, 7)
-  pickupLongitude     Decimal?        @map("pickup_longitude") @db.Decimal(10, 7)
-  pickupPlaceId       String?         @map("pickup_place_id")
-  dropLatitude        Decimal?        @map("drop_latitude") @db.Decimal(10, 7)
-  dropLongitude       Decimal?        @map("drop_longitude") @db.Decimal(10, 7)
-  dropPlaceId         String?         @map("drop_place_id")
-  distanceKm          Decimal?        @map("distance_km") @db.Decimal(10, 2)
-  estimatedDuration   Int?            @map("estimated_duration")
-  lengthCm            Decimal?        @map("length_cm") @db.Decimal(10, 2)
-  widthCm             Decimal?        @map("width_cm") @db.Decimal(10, 2)
-  heightCm            Decimal?        @map("height_cm") @db.Decimal(10, 2)
-  actualWeight        Decimal         @map("actual_weight") @db.Decimal(10, 3)
-  volumetricWeight    Decimal?        @map("volumetric_weight") @db.Decimal(10, 3)
-  billableWeight      Decimal         @map("billable_weight") @db.Decimal(10, 3)
-  orderType           OrderType       @default(B2C) @map("order_type")
-  paymentType         PaymentType     @default(PREPAID) @map("payment_type")
-  calculatedPrice     Decimal         @map("calculated_price") @db.Decimal(10, 2)
-  status              OrderStatus     @default(PENDING)
+  id                  String              @id @default(uuid()) @db.Uuid
+  orderNumber         String              @unique @map("order_number")
+  customerId          String              @map("customer_id") @db.Uuid
+  pickupAreaId        String?             @map("pickup_area_id") @db.Uuid
+  dropAreaId          String?             @map("drop_area_id") @db.Uuid
+  pickupAddress       String              @map("pickup_address")
+  pickupContact       String              @map("pickup_contact")
+  dropAddress         String              @map("drop_address")
+  dropContact         String              @map("drop_contact")
+  lengthCm            Decimal?            @map("length_cm") @db.Decimal(10, 2)
+  widthCm             Decimal?            @map("width_cm") @db.Decimal(10, 2)
+  heightCm            Decimal?            @map("height_cm") @db.Decimal(10, 2)
+  actualWeight        Decimal             @map("actual_weight") @db.Decimal(10, 3)
+  volumetricWeight    Decimal?            @map("volumetric_weight") @db.Decimal(10, 3)
+  billableWeight      Decimal             @map("billable_weight") @db.Decimal(10, 3)
+  orderType           OrderType           @default(B2C) @map("order_type")
+  paymentType         PaymentType         @default(PREPAID) @map("payment_type")
+  calculatedPrice     Decimal             @map("calculated_price") @db.Decimal(10, 2)
+  status              OrderStatus         @default(PENDING)
   description         String?
-  specialInstructions String?         @map("special_instructions")
-  createdAt           DateTime        @default(now()) @map("created_at")
-  updatedAt           DateTime        @updatedAt @map("updated_at")
+  specialInstructions String?             @map("special_instructions")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  distanceKm          Decimal?            @map("distance_km") @db.Decimal(10, 2)
+  dropAddressLine2    String?             @map("drop_address_line2")
+  dropLatitude        Decimal?            @map("drop_latitude") @db.Decimal(10, 7)
+  dropLongitude       Decimal?            @map("drop_longitude") @db.Decimal(10, 7)
+  dropPlaceId         String?             @map("drop_place_id")
+  estimatedDuration   Int?                @map("estimated_duration")
+  pickupAddressLine2  String?             @map("pickup_address_line2")
+  pickupLatitude      Decimal?            @map("pickup_latitude") @db.Decimal(10, 7)
+  pickupLongitude     Decimal?            @map("pickup_longitude") @db.Decimal(10, 7)
+  pickupPlaceId       String?             @map("pickup_place_id")
   assignments         Assignment[]
-  customer            User            @relation("CustomerOrders", fields: [customerId], references: [id])
-  dropArea            Area?           @relation("DropArea", fields: [dropAreaId], references: [id])
-  pickupArea          Area?           @relation("PickupArea", fields: [pickupAreaId], references: [id])
-  trackingEvents      TrackingEvent[]
+  customer            User                @relation("CustomerOrders", fields: [customerId], references: [id])
+  dropArea            Area?               @relation("DropArea", fields: [dropAreaId], references: [id])
+  pickupArea          Area?               @relation("PickupArea", fields: [pickupAreaId], references: [id])
   reschedules         Reschedule[]
   statusOverrides     StatusOverrideLog[]
+  trackingEvents      TrackingEvent[]
 
   @@index([customerId])
   @@index([pickupAreaId])
@@ -153,10 +152,10 @@ model Assignment {
   assignmentReason String?          @map("assignment_reason")
   assignedAt       DateTime         @default(now()) @map("assigned_at")
   respondedAt      DateTime?        @map("responded_at")
-  respondByAt      DateTime?        @map("respond_by_at")
   completedAt      DateTime?        @map("completed_at")
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")
+  respondByAt      DateTime?        @map("respond_by_at")
   agent            User             @relation("AgentAssignments", fields: [agentId], references: [id])
   assignedBy       User             @relation("AssignerAssignments", fields: [assignedById], references: [id])
   order            Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -215,12 +214,12 @@ model AgentStatus {
   activeOrders   Int               @default(0) @map("active_orders")
   latitude       Decimal?          @db.Decimal(10, 7)
   longitude      Decimal?          @db.Decimal(10, 7)
-  rating         Decimal           @db.Decimal(3, 2) @default(5.00)
-  acceptanceRate Decimal           @db.Decimal(5, 2) @default(100.00) @map("acceptance_rate")
-  vehicleType    String            @map("vehicle_type") @default("BIKE")
   lastSeenAt     DateTime?         @map("last_seen_at")
   createdAt      DateTime          @default(now()) @map("created_at")
   updatedAt      DateTime          @updatedAt @map("updated_at")
+  acceptanceRate Decimal           @default(100.00) @map("acceptance_rate") @db.Decimal(5, 2)
+  rating         Decimal           @default(5.00) @db.Decimal(3, 2)
+  vehicleType    String            @default("BIKE") @map("vehicle_type")
   user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([availability])
@@ -233,25 +232,22 @@ model Reschedule {
   orderId       String   @map("order_id") @db.Uuid
   requestedDate DateTime @map("requested_date")
   createdAt     DateTime @default(now()) @map("created_at")
-
-  // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@map("reschedules")
 }
 
 model StatusOverrideLog {
-  id              String      @id @default(uuid()) @db.Uuid
-  orderId         String      @map("order_id") @db.Uuid
-  fromStatus      OrderStatus @map("from_status")
-  toStatus        OrderStatus @map("to_status")
-  reason          String
-  overriddenById  String      @map("overridden_by_id") @db.Uuid
-  createdAt       DateTime    @default(now()) @map("created_at")
-
-  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  overriddenBy    User        @relation(fields: [overriddenById], references: [id])
+  id             String      @id @default(uuid()) @db.Uuid
+  orderId        String      @map("order_id") @db.Uuid
+  fromStatus     OrderStatus @map("from_status")
+  toStatus       OrderStatus @map("to_status")
+  reason         String
+  overriddenById String      @map("overridden_by_id") @db.Uuid
+  createdAt      DateTime    @default(now()) @map("created_at")
+  order          Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  overriddenBy   User        @relation(fields: [overriddenById], references: [id])
 
   @@index([orderId])
   @@map("status_override_logs")
@@ -295,8 +291,6 @@ enum OrderStatus {
   PENDING
   CONFIRMED
   ASSIGNED
-  PICKUP_ASSIGNED
-  ARRIVED_AT_PICKUP
   PICKED_UP
   IN_TRANSIT
   OUT_FOR_DELIVERY
@@ -305,6 +299,8 @@ enum OrderStatus {
   RETURNED
   FAILED
   RESCHEDULED
+  PICKUP_ASSIGNED
+  ARRIVED_AT_PICKUP
 }
 
 enum AssignmentStatus {
