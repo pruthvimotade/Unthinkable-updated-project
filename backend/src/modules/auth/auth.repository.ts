@@ -43,12 +43,19 @@ export const authRepository = {
    * Find a user by email, including the password hash for credential verification.
    */
   async findByEmailWithPassword(email: string): Promise<AuthUser | null> {
-    logger.info({ email }, "[DIAGNOSTIC] Repository: Querying user by email with password");
+    logger.info({ email }, "[DIAGNOSTIC] Repository: Searching for user");
     const user = await prisma.user.findUnique({
       where: { email },
       select: authUserSelect,
     });
-    logger.info({ email, userFound: !!user, userId: user?.id, role: user?.role }, "[DIAGNOSTIC] Repository: User query result");
+    logger.info({ 
+      email, 
+      userFound: !!user, 
+      userId: user?.id, 
+      role: user?.role,
+      status: user?.status,
+      isVerified: user?.isVerified 
+    }, "[DIAGNOSTIC] Repository: User query result");
     return user;
   },
 
