@@ -451,7 +451,6 @@ BACKEND_URL=
 
 Beyond the assignment scope, a few things worth adding:
 
-- [ ] SMS notifications alongside email (brief allows either/both via any free-tier service)
 - [ ] Real-time GPS tracking for agents
 - [ ] Route optimization for agents with multiple stops
 - [ ] Payment gateway integration for prepaid orders
