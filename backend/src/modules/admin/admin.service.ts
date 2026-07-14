@@ -100,7 +100,7 @@ export const adminService = {
   async createStaff(data: z.infer<typeof validation.createUserSchema>) {
     // We import authService dynamically to avoid circular dependencies if any, 
     // or just import it at the top. Let's assume we import it.
-    const { authService } = await import("../auth/auth.service");
+    const { authService } = await import("../auth/auth.service.js");
     return authService.createUser({
       ...data,
       isVerified: true,

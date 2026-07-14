@@ -143,7 +143,7 @@ export const orderService = {
     });
 
     // Fire-and-forget auto assignment
-    import("../assignment").then(({ assignmentService }) => {
+    import("../assignment/index.js").then(({ assignmentService }) => {
       assignmentService.autoAssign(order.id, "SYSTEM").catch((err: any) => {
         logger.warn({ orderId: order.id, err: err.message }, "Auto-assignment failed during order creation");
       });
@@ -262,7 +262,7 @@ export const orderService = {
     void notificationService.sendStatusUpdate(orderId);
 
     // Fire-and-forget auto assignment
-    import("../assignment").then(({ assignmentService }) => {
+    import("../assignment/index.js").then(({ assignmentService }) => {
       assignmentService.autoAssign(orderId, "SYSTEM").catch((err: any) => {
         logger.warn({ orderId, err: err.message }, "Auto-assignment failed during order reschedule");
       });

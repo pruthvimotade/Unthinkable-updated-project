@@ -384,7 +384,7 @@ export const authService = {
    * Verify phone number via Firebase ID token.
    */
   async verifyPhone(email: string, phone: string, firebaseToken: string): Promise<void> {
-    const { firebaseEnabled } = await import("../../config/firebase.config");
+    const { firebaseEnabled } = await import("../../config/firebase.config.js");
     
     if (!firebaseEnabled) {
       throw ApiError.badRequest("Firebase phone verification is unavailable");
