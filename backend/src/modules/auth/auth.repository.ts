@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import type { RegisterInput } from "./auth.validation";
+import { logger } from "../../config/logger.config";
 
 // ─── Select sets ────────────────────────────────────────────────────────────
 
@@ -42,10 +43,13 @@ export const authRepository = {
    * Find a user by email, including the password hash for credential verification.
    */
   async findByEmailWithPassword(email: string): Promise<AuthUser | null> {
-    return prisma.user.findUnique({
+    logger.info({ email }, "[DIAGNOSTIC] Repository: Querying user by email with password");
+    const user = await prisma.user.findUnique({
       where: { email },
       select: authUserSelect,
     });
+    logger.info({ email, userFound: !!user, userId: user?.id, role: user?.role }, "[DIAGNOSTIC] Repository: User query result");
+    return user;
   },
 
   /**

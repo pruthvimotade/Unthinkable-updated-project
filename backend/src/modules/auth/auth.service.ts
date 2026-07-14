@@ -207,22 +207,34 @@ export const authService = {
    * Authenticate a user with email and password.
    */
   async login(input: LoginInput): Promise<AuthResponse> {
+    // DIAGNOSTIC: Log login attempt start
+    logger.info({ email: input.email, env: env.NODE_ENV, skipEmailVerification: env.SKIP_EMAIL_VERIFICATION, allowPrivileged: env.ALLOW_PRIVILEGED_SELF_REGISTRATION }, "[DIAGNOSTIC] Login attempt started");
+
     // Find user with password
     const user = await authRepository.findByEmailWithPassword(input.email);
     if (!user) {
+      logger.warn({ email: input.email }, "[DIAGNOSTIC] User not found in database");
       throw ApiError.unauthorized("Invalid email or password");
     }
+
+    // DIAGNOSTIC: Log user found
+    logger.info({ email: input.email, userId: user.id, role: user.role, status: user.status, isVerified: user.isVerified, isPhoneVerified: user.isPhoneVerified, failedAttempts: user.failedLoginAttempts, lockoutUntil: user.lockoutUntil }, "[DIAGNOSTIC] User found in database");
 
     // Check if account is locked out
     if (user.lockoutUntil && new Date(user.lockoutUntil) > new Date()) {
       const remainingMin = Math.ceil((new Date(user.lockoutUntil).getTime() - Date.now()) / 60000);
+      logger.warn({ email: input.email, remainingMin }, "[DIAGNOSTIC] Account locked out");
       throw ApiError.forbidden(`Too many failed attempts. Account locked. Try again in ${remainingMin} minutes.`);
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(input.password, user.password);
+    logger.info({ email: input.email, isPasswordValid }, "[DIAGNOSTIC] Password comparison result");
+    
     if (!isPasswordValid) {
       const attempts = (user.failedLoginAttempts || 0) + 1;
+      logger.warn({ email: input.email, attempts }, "[DIAGNOSTIC] Password invalid, incrementing failed attempts");
+      
       if (attempts >= 5) {
         await prisma.user.update({
           where: { id: user.id },
@@ -243,10 +255,15 @@ export const authService = {
 
     // Check account status
     if (user.status !== "ACTIVE") {
+      logger.warn({ email: input.email, status: user.status }, "[DIAGNOSTIC] Account not active");
       throw ApiError.forbidden("Account is not active. Please contact support.");
     }
+    
     // Skip email verification check in development if configured
+    logger.info({ email: input.email, isVerified: user.isVerified, skipEmailVerification: env.SKIP_EMAIL_VERIFICATION }, "[DIAGNOSTIC] Checking email verification");
+    
     if (!user.isVerified && !env.SKIP_EMAIL_VERIFICATION) {
+      logger.warn({ email: input.email, isVerified: user.isVerified, skipEmailVerification: env.SKIP_EMAIL_VERIFICATION }, "[DIAGNOSTIC] Email verification check failed");
       throw ApiError.forbidden("Please verify your email first.");
     }
 
@@ -270,6 +287,8 @@ export const authService = {
       role: user.role,
       status: user.status,
     });
+
+    logger.info({ email: input.email, userId: user.id, role: user.role }, "[DIAGNOSTIC] Token generated successfully");
 
     // Return user without password
     const { password: _, ...userProfile } = user;

@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
 import type { LoginInput, RegisterInput, VerifyEmailInput, ForgotPasswordInput, ResetPasswordInput } from "./auth.validation";
+import { logger } from "../../config/logger.config";
 
 /**
  * POST /api/v1/auth/register
@@ -25,13 +26,21 @@ export async function register(req: Request, res: Response): Promise<void> {
  */
 export async function login(req: Request, res: Response): Promise<void> {
   const input = req.body as LoginInput;
-  const result = await authService.login(input);
+  logger.info({ email: input.email, body: req.body }, "[DIAGNOSTIC] Controller: Login request received");
+  
+  try {
+    const result = await authService.login(input);
+    logger.info({ email: input.email, userId: result.user?.id, role: result.user?.role }, "[DIAGNOSTIC] Controller: Login successful, sending response");
 
-  res.status(200).json({
-    success: true,
-    message: "Login successful",
-    data: result,
-  });
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: result,
+    });
+  } catch (error) {
+    logger.error({ email: input.email, error }, "[DIAGNOSTIC] Controller: Login failed with error");
+    throw error;
+  }
 }
 
 /**
