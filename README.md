@@ -79,7 +79,7 @@ This project was built against Unthinkable's Last-Mile Delivery Tracker assignme
 
 | Rate Cards Manager | Staff Management |
 |---|---|
-| ![Rate Cards](admin-rate-cards.png) | ![Staff Management](admin-staff-management.png) |
+| ![Rate Cards](admin-rate-cards.png) | ![Customer Order Creation](admin-staff-management.png) |
 
 *Rate Cards Manager is where admins configure intra/inter-zone rates separately for B2B and B2C, plus COD surcharge — no pricing value is ever hardcoded in the application.*
 
