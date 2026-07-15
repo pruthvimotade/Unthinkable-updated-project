@@ -62,16 +62,16 @@ This project was built against Unthinkable's Last-Mile Delivery Tracker assignme
 ![Landing Page](landing-page.png)
 *Public marketing homepage with live platform metrics (total deliveries, active drivers, routing precision, API response time).*
 
-### Customer Portal
+
 
 | Login | Dashboard |
 |---|---|
-| ![Customer Login](customer-login.png) | ![Customer Dashboard](customer-dashboard.png) |
+| ![Customer Login](customer-login.png) | ![Admin DashBoard](customer-dashboard.png) |
 
 ![Create Order](create-order.png)
 *Order creation flow with pickup/drop address, package dimensions, and real-time price calculation shown before confirmation.*
 
-### Admin Console
+
 
 | Operations Hub | Orders Queue |
 |---|---|
